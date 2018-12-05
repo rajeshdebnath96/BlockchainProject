@@ -8,8 +8,8 @@ first-network
 high-throughput
 scripts
 basic-network/
-my_codes/node_modules/
-my_codes/package-lock.json
-my_codes/hfc-key-store/
-my_codes/bootstrap-4.1.3/
+test/node_modules/
+test/package-lock.json
+test/hfc-key-store/
+test/bootstrap-4.1.3/
 
