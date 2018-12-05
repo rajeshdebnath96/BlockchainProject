@@ -15,10 +15,11 @@ node query.js
 
 #git commands
 # git init
-# git add <> -A for all
+# git add <> -A for all folder_name/
 # git commit -m "first commit"
 # git remote add origin https://github.com/rajeshdebnath96/BlockchainProject.git
 # git remote set-url origin https://github.com/rajeshdebnath96/BlockchainProject.git
 # git push -u origin master
 # git push -u --force origin master
 # git pull origin master
+# git rm --cache -f -r my_codes/
