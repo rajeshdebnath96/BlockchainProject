@@ -23,3 +23,8 @@ node query.js
 # git push -u --force origin master
 # git pull origin master
 # git rm --cache -f -r my_codes/
+
+# storing git username & password
+# git config credential.helper store 
+# git pull
+

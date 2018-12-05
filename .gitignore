@@ -7,7 +7,6 @@ fabric-ca/
 first-network
 high-throughput
 scripts
-basic-network/
 test/node_modules/
 test/package-lock.json
 test/hfc-key-store/
