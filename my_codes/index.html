@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Ship Money!</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
+	 <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="bootstrap-4.1.3/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	<!-- Latest compiled JavaScript -->
+	<script src="bootstrap-4.1.3/js/bootstrap.min.js"></script>
+	<script>
+		$(document).ready(function() {
+
+			// Add a given number of units to the account value
+			$("#submit").click(function() {
+				var sender = $("#sender").val();
+				var receiver = $("#receiver").val();
+				var txAmount = $("#txAmount").val();
+				var pm = $("#pm").val();
+				var txNo = $("#txNo").val();
+				console.log("Sender : " + sender+" "+receiver+" "+txAmount+" "+pm+" "+txNo);
+
+				$.ajax({
+				    beforeSend: function(xhrObj){
+				        xhrObj.setRequestHeader("Content-Type","application/json");
+				        xhrObj.setRequestHeader("Accept","application/json");
+				    },
+				    type: "POST",
+				    url: 'http://localhost:3001/submit',
+					data: JSON.stringify({ "sender": sender,"receiver":receiver,"txAmount":txAmount,"pm":pm,"txNo":txNo }),
+				    dataType: "json",
+				    success: function(result) {
+				       console.log("Status: " + result.status);
+				       $("#submitResult").text("Status: " + result.status)
+				    }
+				});
+			});
+			// Query the current value of the account
+			
+			$("#viewTx").click(function() {
+				var viewTx = $("#viewTxID").val();
+				//var viewTx = $("input[name=viewTxID]").val();
+				//alert(viewTx1);
+				console.log("viewTxID = " + viewTx);
+				$.ajax({
+					beforeSend: function(xhrObj){
+				        xhrObj.setRequestHeader("Content-Type","application/json");
+				        xhrObj.setRequestHeader("Accept","application/json");
+				    },
+				    type: "GET",
+				    url: 'http://localhost:3001/viewTx',
+					data: JSON.stringify({ "viewTx": viewTx,"viewTx1": viewTx }),
+				    dataType: "json",
+					success: function(data, status) {
+						console.log(data);
+						$("#viewTxResult").text("Status: " + data.status)
+						//document.getElementById("accountValue").innerHTML = "Account ($): " + data.value;
+					}
+				});
+			});
+			$("#verifyTx").click(function() {
+				var verifyTx = $("#verifyTxID").val();
+				var verifyTxStatus = $("#verifyTxStatus").val();
+				console.log("verifyTx = " + verifyTx+" "+verifyTxStatus);
+
+				$.ajax({
+				    beforeSend: function(xhrObj){
+				        xhrObj.setRequestHeader("Content-Type","application/json");
+				        xhrObj.setRequestHeader("Accept","application/json");
+				    },
+				    type: "POST",
+				    url: 'http://localhost:3001/verifyTx',
+					data: JSON.stringify({ "verifyTx": verifyTx,"verifyTxStatus":verifyTxStatus }),
+				    dataType: "json",
+				    success: function(result) {
+				       console.log("Status: " + result.status);
+						$("#verifyTxResult").text("Status: " + result.status)
+				    }
+				});
+			});
+			$("#viewMyTx").click(function() {
+				var viewMyTxID = $("#viewMyTxID").val();
+				console.log("viewMyTx = " + viewMyTxID);
+
+				$.ajax({
+				    //beforeSend: function(xhrObj){
+				      //  xhrObj.setRequestHeader("Content-Type","application/json");
+				       // xhrObj.setRequestHeader("Accept","application/json");
+				    //},
+				    type: "POST",
+				    url: 'http://localhost:3001/viewMyTx',
+					data: JSON.stringify({ "viewMyTx": viewMyTxID,"viewTx1": viewMyTxID }),
+				    dataType: "json",
+				    success: function(result) {
+				       console.log("Status: " + result.status);
+						//$("#viewMyTxResult").text("Status: " + result.status);
+						var res = result.status.split("&");
+						var index = res.indexOf("$$$$$$$");
+						var index_valid,valid_status;
+						var str = "<table class=\"table table-hover\">";
+						str += "<thead><tr>"
+						str += "<th>Transaction ID</th><th>Sender</th><th>Receiver</th><th>Transaction Amount</th>";
+						str += "<th>Payment Media</th><th>Transaction No</th><th>Verification Status</th><tr></thead>";
+						for(var i=0;(i+1)*6<index;i++){
+							str += "<tr ";
+							index_valid = res.indexOf(res[i*6],index);
+							if (res[index_valid+1] == 0 ) {str+="class=\"info\">" 
+								valid_status ="Not Verified";
+							}
+							else if (res[index_valid+1] == 1) {str+="class=\"success\">"
+								valid_status="Correct (verified)";
+							}
+							else if (res[index_valid+1] == 2) {str+="class=\"danger\">"
+								valid_status="Incorrect (verified)";
+							}
+							for(var j=0;j<6;j++ ){
+								str+="<td>";
+								str += res[i*6+j];
+								str += "</td>"
+							}
+							str += "<td>";
+							
+							console.log(res,index_valid,index);
+							str+=valid_status
+							//str += res[index_valid+1];
+							str += "</td></tr>"
+						}
+						str += "</table>";
+						$("#viewMyTxResult").html(str);
+				    }
+				});
+			});
+			$("#viewAllTx").click(function() {
+				//var amount = $("input").val();
+				console.log("All Transactions = ");
+
+				$.ajax({
+				    beforeSend: function(xhrObj){
+				        xhrObj.setRequestHeader("Content-Type","application/json");
+				        xhrObj.setRequestHeader("Accept","application/json");
+				    },
+				    type: "GET",
+				    url: 'http://localhost:3001/viewAllTx',
+					//data: JSON.stringify({ "amount": amount }),
+				    dataType: "json",
+				    success: function(result) {
+				       console.log("Status: " + result.status);
+						//$("#viewAllTxResult").text("Status: " + result.status);
+						var res = result.status.split("&");
+						var index = res.indexOf("$$$$$$$")
+						var index_valid;
+						var str = "<table class=\"table table-hover\">";
+						str += "<thead><tr>"
+						str += "<th>Transaction ID</th><th>Sender</th><th>Receiver</th><th>Transaction Amount</th>";
+						str += "<th>Payment Media</th><th>Transaction No</th><th>Verification Status</th><tr></thead>";
+						for(var i=0;(i+1)*6<index;i++){
+							str += "<tr>";
+							for(var j=0;j<6;j++ ){
+								str+="<td>";
+								str += res[i*6+j];
+								str += "</td>"
+							}
+							str += "<td>";
+							index_valid = res.indexOf(res[i*6],index);
+							console.log(res,index_valid,index);
+							if (res[index_valid+1] == 0 ) str+="Not Verified";
+							else if (res[index_valid+1] == 1) str+="Correct (verified)";
+							else if (res[index_valid+1] == 2) str+="Incorrect (verified)";
+							//str += res[index_valid+1];
+							str += "</td></tr>"
+						}
+						str += "</table>";
+						$("#viewAllTxResult").html(str);
+				    }
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+
+<div class="container">
+
+	 <div class="jumbotron">
+		<h2> Submit transaction: </h2> 	
+		<table>
+		<tr><td>Enter Sender Name: </td> <td><input type="text" id="sender"></td></tr><br>
+		<tr><td>Enter Receiver Name:</td> <td><input type="text" id="receiver"></td></tr><br>
+		<tr><td>Enter transaction Amount:</td> <td><input type="text" id="txAmount"></td></tr><br>
+		<tr><td>Enter Payment Medium:</td> <td><input type="text" id="pm"></td></tr><br>
+		<tr><td>Enter transaction No: </td><td><input type="text" id="txNo"></td></tr><br>
+		</table>
+
+		<button id="submit">Submit</button><br>
+		<div id="submitResult"></div>
+	</div>
+
+	<div class="jumbotron">
+	 	<h2>View transaction Status: </h2>
+	 	Enter transaction ID: <input type="text" id="viewTxID" name="viewTxID"><br>
+		<button id="viewTx">View Transaction </button><br>
+		<div id="viewTxResult"></div>
+	</div>
+
+	 <div class="jumbotron">
+		<h2>Verify transaction: </h2> 	
+		Enter transaction ID: <input type="text" id="verifyTxID"><br>
+		Enter Status: <input type="text" id="verifyTxStatus"><br>
+		<button id="verifyTx">Verify Transaction</button><br>
+		<div id="verifyTxResult"></div>
+	 </div>
+
+	 <div class="jumbotron">
+	 	<h2>View My transactions:</h2>
+	 	Enter transaction ID: <input type="text" id="viewMyTxID"><br>
+	 	<button id="viewMyTx">View Your Transactions</button><br>
+		<div id="viewMyTxResult"></div>
+	 </div>
+
+	 <div class="jumbotron">
+	 	<h2>View All transactions:</h2>
+	 	<button id="viewAllTx">View All Transactions</button><br>
+		<div id="viewAllTxResult"></div>
+	 </div>
+
+	 <div class="jumbotron">
+	 	
+	 	
+	 </div>
+</div>
+</body>
+</html>
