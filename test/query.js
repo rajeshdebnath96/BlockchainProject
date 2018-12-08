@@ -171,7 +171,8 @@ app.post("/submit", function(req, res) {
 	var txAmount = req.body.txAmount;
 	var pm = req.body.pm;
 	var txNo = req.body.txNo;
-	console.log(sender,receiver,txAmount,pm,txNo);
+	var txDate = req.body.txDate;
+	console.log(sender,receiver,txAmount,pm,txNo,txDate);
 	// get a transaction id object based on the current user assigned to fabric client
 	tx_id = fabric_client.newTransactionID();
 	console.log("Assigning transaction_id: ", tx_id._transaction_id);
@@ -183,7 +184,7 @@ app.post("/submit", function(req, res) {
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'mychaincode',
 		fcn: 'submit',
-		args: [sender,receiver,txAmount,pm,txNo],
+		args: [sender,receiver,txAmount,pm,txNo,txDate],
 		chainId: 'mychannel',
 		txId: tx_id
 	};

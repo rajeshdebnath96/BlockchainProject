@@ -23,7 +23,8 @@
 				var txAmount = $("#txAmount").val();
 				var pm = $("#pm").val();
 				var txNo = $("#txNo").val();
-				console.log("Sender : " + sender+" "+receiver+" "+txAmount+" "+pm+" "+txNo);
+				var txDate = $('#txDate').val();
+				console.log("Sender : " + sender+" "+receiver+" "+txAmount+" "+pm+" "+txNo+" "+txDate);
 
 				$.ajax({
 				    beforeSend: function(xhrObj){
@@ -32,7 +33,7 @@
 				    },
 				    type: "POST",
 				    url: 'http://localhost:3001/submit',
-					data: JSON.stringify({ "sender": sender,"receiver":receiver,"txAmount":txAmount,"pm":pm,"txNo":txNo }),
+					data: JSON.stringify({ "sender": sender,"receiver":receiver,"txAmount":txAmount,"pm":pm,"txNo":txNo,"txDate":txDate }),
 				    dataType: "json",
 				    success: function(result) {
 				       console.log("Status: " + result.status);
@@ -154,19 +155,20 @@
 						var res = result.status.split("&");
 						var index = res.indexOf("$$$$$$$")
 						var index_valid;
+						var c = 7;
 						var str = "<table class=\"table table-hover\">";
 						str += "<thead><tr>"
 						str += "<th>Transaction ID</th><th>Sender</th><th>Receiver</th><th>Transaction Amount</th>";
-						str += "<th>Payment Media</th><th>Transaction No</th><th>Verification Status</th><tr></thead>";
-						for(var i=0;(i+1)*6<index;i++){
+						str += "<th>Payment Media</th><th>Transaction No</th><th>Transaction Date</th><th>Verification Status</th><tr></thead>";
+						for(var i=0;(i+1)*c<index;i++){
 							str += "<tr>";
-							for(var j=0;j<6;j++ ){
+							for(var j=0;j<c;j++ ){
 								str+="<td>";
-								str += res[i*6+j];
+								str += res[i*c+j];
 								str += "</td>"
 							}
 							str += "<td>";
-							index_valid = res.indexOf(res[i*6],index);
+							index_valid = res.indexOf(res[i*c],index);
 							console.log(res,index_valid,index);
 							if (res[index_valid+1] == 0 ) str+="Not Verified";
 							else if (res[index_valid+1] == 1) str+="Correct (verified)";
@@ -183,56 +185,57 @@
 	</script>
 </head>
 <body>
+	<div class="container">
+		<div class="page-header">
+			<h1>Transaction Storing System using Blockchain</h1>
+		</div>
+		 <div class="jumbotron">
+			<h2> Submit transaction: </h2> 	
+			<table>
+				<tr><td>Enter Sender Name: </td> <td><input type="text" id="sender"></td></tr>
+				<tr><td>Enter Receiver Name:</td> <td><input type="text" id="receiver"></td></tr>
+				<tr><td>Enter transaction Amount:</td> <td><input type="text" id="txAmount"></td></tr>
+				<tr><td>Enter Payment Medium:</td> <td><input type="text" id="pm"></td></tr>
+				<tr><td>Enter transaction No: </td><td><input type="text" id="txNo"></td></tr>
+				<tr><td>Enter Date: </td><td><input type="date" id="txDate"></td></tr>
+			</table>
 
-<div class="container">
+			<button id="submit">Submit</button><br>
+			<div id="submitResult"></div>
+		</div>
 
-	 <div class="jumbotron">
-		<h2> Submit transaction: </h2> 	
-		<table>
-		<tr><td>Enter Sender Name: </td> <td><input type="text" id="sender"></td></tr><br>
-		<tr><td>Enter Receiver Name:</td> <td><input type="text" id="receiver"></td></tr><br>
-		<tr><td>Enter transaction Amount:</td> <td><input type="text" id="txAmount"></td></tr><br>
-		<tr><td>Enter Payment Medium:</td> <td><input type="text" id="pm"></td></tr><br>
-		<tr><td>Enter transaction No: </td><td><input type="text" id="txNo"></td></tr><br>
-		<tr><td>Enter Date: </td><td><input type="date" id="txDate"></td></tr><br>
-		</table>
+		<div class="jumbotron">
+		 	<h2>View transaction Status: </h2>
+		 	Enter transaction ID: <input type="text" id="viewTxID" name="viewTxID"><br>
+			<button id="viewTx">View Transaction </button><br>
+			<div id="viewTxResult"></div>
+		</div>
 
-		<button id="submit">Submit</button><br>
-		<div id="submitResult"></div>
+		 <div class="jumbotron">
+			<h2>Verify transaction: </h2> 	
+			Enter transaction ID: <input type="text" id="verifyTxID"><br>
+			Enter Status: <input type="text" id="verifyTxStatus"><br>
+			<button id="verifyTx">Verify Transaction</button><br>
+			<div id="verifyTxResult"></div>
+		 </div>
+
+		 <div class="jumbotron">
+		 	<h2>View My transactions:</h2>
+		 	Enter transaction ID: <input type="text" id="viewMyTxID"><br>
+		 	<button id="viewMyTx">View Your Transactions</button><br>
+			<div id="viewMyTxResult"></div>
+		 </div>
+
+		 <div class="jumbotron">
+		 	<h2>View All transactions:</h2>
+		 	<button id="viewAllTx">View All Transactions</button><br>
+			<div id="viewAllTxResult"></div>
+		 </div>
+
+		 <!--<div class="jumbotron">
+		 	
+		 	
+		 </div> -->
 	</div>
-
-	<div class="jumbotron">
-	 	<h2>View transaction Status: </h2>
-	 	Enter transaction ID: <input type="text" id="viewTxID" name="viewTxID"><br>
-		<button id="viewTx">View Transaction </button><br>
-		<div id="viewTxResult"></div>
-	</div>
-
-	 <div class="jumbotron">
-		<h2>Verify transaction: </h2> 	
-		Enter transaction ID: <input type="text" id="verifyTxID"><br>
-		Enter Status: <input type="text" id="verifyTxStatus"><br>
-		<button id="verifyTx">Verify Transaction</button><br>
-		<div id="verifyTxResult"></div>
-	 </div>
-
-	 <div class="jumbotron">
-	 	<h2>View My transactions:</h2>
-	 	Enter transaction ID: <input type="text" id="viewMyTxID"><br>
-	 	<button id="viewMyTx">View Your Transactions</button><br>
-		<div id="viewMyTxResult"></div>
-	 </div>
-
-	 <div class="jumbotron">
-	 	<h2>View All transactions:</h2>
-	 	<button id="viewAllTx">View All Transactions</button><br>
-		<div id="viewAllTxResult"></div>
-	 </div>
-
-	 <!--<div class="jumbotron">
-	 	
-	 	
-	 </div> -->
-</div>
 </body>
 </html>

@@ -44,7 +44,7 @@ type Transaction struct{
 	TxAmount string `json:"txamount"`
 	PaymentMedium string `json:"paymentmedium"`
 	TxNo string `json:"txno"`
-	//var Date time  
+	TxDate string `json:"TxDate"`  
 }
 
 func GetBytes(key interface{}) ([]byte, error) {
@@ -207,6 +207,67 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	return shim.Success(nil)
 } */
 
+func get_Txmap(TxArray []byte) map[string]Transaction{
+	var TxNewmap map[string]Transaction
+	TxNewmap = make(map[string]Transaction)
+	var s = strings.Split(string(TxArray),"&")
+	//fmt.Println(s)
+	var c = 7
+	for i:=0 ; i<len(s)/c;i++{
+		TxNewmap[s[c*i]] = Transaction{s[c*i+1],s[c*i+2],s[c*i+3],s[c*i+4],s[c*i+5],s[c*i+6]}
+	}
+	return TxNewmap
+}
+
+func get_TxValidmap(TxValidArray []byte) map[string]string{
+	var TxValidNewmap map[string]string
+	TxValidNewmap = make(map[string]string)
+	var s = strings.Split(string(TxValidArray),"&")
+	var c = 2
+	for i:=0; i< len(s)/c;i++{
+		TxValidNewmap[s[c*i]] = s[c*i+1]
+	}
+	return TxValidNewmap
+}
+
+func get_TxmapString(TxNewmap map[string]Transaction) string{
+	var TxArraystr string
+	var buffer bytes.Buffer
+	for k,v := range TxNewmap{
+		buffer.WriteString(k)
+		buffer.WriteString("&")
+		buffer.WriteString(v.Sender)
+		buffer.WriteString("&")
+		buffer.WriteString(v.Receiver)
+		buffer.WriteString("&")
+		buffer.WriteString(v.TxAmount)
+		buffer.WriteString("&")
+		buffer.WriteString(v.PaymentMedium)
+		buffer.WriteString("&")
+		buffer.WriteString(v.TxNo)
+		buffer.WriteString("&")
+		buffer.WriteString(v.TxDate)
+		buffer.WriteString("&")
+	}
+	//TxArrayvalBytes,_ = json.Marshal(TxNewmap)
+	TxArraystr = buffer.String()
+	return TxArraystr
+} 
+
+func get_TxValidmapString(TxValidNewmap map[string]string) string{
+	var TxValidArraystr string
+	var buffer bytes.Buffer
+	for k,v := range TxValidNewmap{
+		buffer.WriteString(k)
+		buffer.WriteString("&")
+		buffer.WriteString(v)
+		buffer.WriteString("&")
+	}
+	//TxValidArrayvalBytes,_ = json.Marshal(TxValidNewmap)
+	TxValidArraystr = buffer.String()
+	return TxValidArraystr
+}
+
 func (t *SimpleChaincode) submit(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 6 {
 		//return shim.Error("Incorrect number of arguments. Expecting 1")
@@ -216,10 +277,10 @@ func (t *SimpleChaincode) submit(stub shim.ChaincodeStubInterface, args []string
 	var TxAmount = args[2]
 	var PaymentMedium = args[3]
 	var TxNo = args[4]
-	//var Date = args[5]  
+	var TxDate = args[5]  
 	//var Txmap, TxValidmap,lastID string
 	var lastIDval int
-	var tx = Transaction{Sender,Receiver,TxAmount,PaymentMedium,TxNo}
+	var tx = Transaction{Sender,Receiver,TxAmount,PaymentMedium,TxNo,TxDate}
 	TxArray, err := stub.GetState("Txmap")
 	if err != nil {
 		return shim.Error("Failed to get state")
@@ -230,7 +291,7 @@ func (t *SimpleChaincode) submit(stub shim.ChaincodeStubInterface, args []string
 	//var TxArrayval interface{} 
 	//err = json.Unmarshal(TxArray,&TxArrayval)
 	//var TxArrayType = TxArrayval.(map[string]Transaction)
-	var TxNewmap map[string]Transaction
+	var TxNewmap = get_Txmap(TxArray) /*map[string]Transaction
 	TxNewmap = make(map[string]Transaction)
 	var s = strings.Split(string(TxArray),"&")
 	//fmt.Println(s)
@@ -251,7 +312,7 @@ func (t *SimpleChaincode) submit(stub shim.ChaincodeStubInterface, args []string
 	//var TxValidArrayval interface{}
 	//err = json.Unmarshal(TxValidArray,&TxValidArrayval)
 	//var TxValidType = TxValidArrayval.(map[string]string)
-	var TxValidNewmap map[string]string
+	var TxValidNewmap = get_TxValidmap(TxValidArray) /*map[string]string
 	TxValidNewmap = make(map[string]string)
 	s = strings.Split(string(TxValidArray),"&")
 	for i:=0; i< len(s)/2;i++{
@@ -274,7 +335,7 @@ func (t *SimpleChaincode) submit(stub shim.ChaincodeStubInterface, args []string
 		TxNewmap[string(lastIDBytes)] = tx
 		TxValidNewmap[string(lastIDBytes)] = "0"
 	//}
-	var TxArraystr string
+	var TxArraystr = get_TxmapString(TxNewmap) /*string
 	var buffer bytes.Buffer
 	for k,v := range TxNewmap{
 		buffer.WriteString(k)
@@ -291,13 +352,13 @@ func (t *SimpleChaincode) submit(stub shim.ChaincodeStubInterface, args []string
 		buffer.WriteString("&")
 	}
 	//TxArrayvalBytes,_ = json.Marshal(TxNewmap)
-	TxArraystr = buffer.String()
+	TxArraystr = buffer.String() */
 	err = stub.PutState("Txmap", []byte(TxArraystr))
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
-	var TxValidArraystr string
+	var TxValidArraystr = get_TxValidmapString(TxValidNewmap) /*string
 	buffer.Reset()
 	for k,v := range TxValidNewmap{
 		buffer.WriteString(k)
@@ -306,7 +367,7 @@ func (t *SimpleChaincode) submit(stub shim.ChaincodeStubInterface, args []string
 		buffer.WriteString("&")
 	}
 	//TxValidArrayvalBytes,_ = json.Marshal(TxValidNewmap)
-	TxValidArraystr = buffer.String()
+	TxValidArraystr = buffer.String() */
 	err = stub.PutState("TxValidmap", []byte(TxValidArraystr))
 	if err != nil {
 		return shim.Error(err.Error())
@@ -334,12 +395,12 @@ func (t *SimpleChaincode) verify(stub shim.ChaincodeStubInterface, args []string
 	//var TxValidArrayval interface{}
 	//err = json.Unmarshal(TxValidArray,&TxValidArrayval)
 	//var TxValidType = TxValidArrayval.(map[string]string)
-	var TxValidNewmap map[string]string
+	var TxValidNewmap = get_TxValidmap(TxValidArray) /*map[string]string
 	TxValidNewmap = make(map[string]string)
 	var s = strings.Split(string(TxValidArray),"&")
 	for i:=0; i< len(s)/2;i++{
 		TxValidNewmap[s[2*i]] = s[2*i+1]
-	}
+	} */
 
 	if state == "true" || state == "yes"{
 		TxValidNewmap[requestID] = "1"
@@ -347,7 +408,7 @@ func (t *SimpleChaincode) verify(stub shim.ChaincodeStubInterface, args []string
 		TxValidNewmap[requestID] = "2"
 	}
 
-	var TxValidArraystr string
+	var TxValidArraystr = get_TxValidmapString(TxValidNewmap) /*string
 	var buffer bytes.Buffer
 	for k,v := range TxValidNewmap{
 		buffer.WriteString(k)
@@ -356,7 +417,7 @@ func (t *SimpleChaincode) verify(stub shim.ChaincodeStubInterface, args []string
 		buffer.WriteString("&")
 	}
 	//TxValidArrayvalBytes,_ = json.Marshal(TxValidNewmap)
-	TxValidArraystr = buffer.String()
+	TxValidArraystr = buffer.String()  */
 	err = stub.PutState("TxValidmap", []byte(TxValidArraystr))
 	if err != nil {
 		return shim.Error(err.Error())
@@ -381,12 +442,12 @@ func (t *SimpleChaincode) view(stub shim.ChaincodeStubInterface, args []string) 
 	//var TxValidArrayval interface{}
 	//err = json.Unmarshal(TxValidArray,&TxValidArrayval)
 	//var TxValidType = TxValidArrayval.(map[string]string)
-	var TxValidNewmap map[string]string
+	var TxValidNewmap = get_TxValidmap(TxValidArray) /*map[string]string
 	TxValidNewmap = make(map[string]string)
 	var s = strings.Split(string(TxValidArray),"&")
 	for i:=0; i< len(s)/2;i++{
 		TxValidNewmap[s[2*i]] = s[2*i+1]
-	}
+	} */
 	var state string 
 	//var requestIDval int
 	//requestIDval,_ = strconv.Atoi(string(requestID))
@@ -418,7 +479,7 @@ func (t *SimpleChaincode) mytransactions(stub shim.ChaincodeStubInterface, args 
 	//var TxArrayval interface{} 
 	//err = json.Unmarshal(TxArray,&TxArrayval)
 	//var TxArrayType = TxArrayval.(map[string]Transaction)
-	var TxNewmap map[string]Transaction
+	var TxNewmap = get_Txmap(TxArray) /*map[string]Transaction
 	TxNewmap = make(map[string]Transaction)
 	var s = strings.Split(string(TxArray),"&")
 	fmt.Println(s)
@@ -437,12 +498,12 @@ func (t *SimpleChaincode) mytransactions(stub shim.ChaincodeStubInterface, args 
 		return shim.Error("TxValidmap Entity not found")
 	}
 
-	var TxValidNewmap map[string]string
+	var TxValidNewmap = get_TxValidmap(TxValidArray) /*map[string]string
 	TxValidNewmap = make(map[string]string)
 	s = strings.Split(string(TxValidArray),"&")
 	for i:=0; i< len(s)/2;i++{
 		TxValidNewmap[s[2*i]] = s[2*i+1]
-	}
+	} */
 	var TxArraystr string
 	var keys []string
 	var buffer bytes.Buffer
@@ -460,6 +521,8 @@ func (t *SimpleChaincode) mytransactions(stub shim.ChaincodeStubInterface, args 
 			buffer.WriteString(v.PaymentMedium)
 			buffer.WriteString("&")
 			buffer.WriteString(v.TxNo)
+			buffer.WriteString("&")
+			buffer.WriteString(v.TxDate)
 			buffer.WriteString("&")
 			keys = append(keys,k)
 		}
@@ -503,7 +566,7 @@ func (t *SimpleChaincode) alltransactions(stub shim.ChaincodeStubInterface, args
 	//var TxArrayval interface{} 
 	//err = json.Unmarshal(TxArray,&TxArrayval)
 	//var TxArrayType = TxArrayval.(map[string]Transaction)
-	var TxNewmap map[string]Transaction
+	var TxNewmap = get_Txmap(TxArray) /*map[string]Transaction
 	TxNewmap = make(map[string]Transaction)
 	var s = strings.Split(string(TxArray),"&")
 	for i:=0 ; i<len(s)/6.;i++{
@@ -523,7 +586,7 @@ func (t *SimpleChaincode) alltransactions(stub shim.ChaincodeStubInterface, args
 	//var TxValidArrayval interface{}
 	//err = json.Unmarshal(TxValidArray,&TxValidArrayval)
 	//var TxValidType = TxValidArrayval.(map[string]string)
-	var TxValidNewmap map[string]string
+	var TxValidNewmap = get_TxValidmap(TxValidArray) /*map[string]string
 	TxValidNewmap = make(map[string]string)
 	s = strings.Split(string(TxValidArray),"&")
 	for i:=0; i< len(s)/2;i++{
@@ -543,7 +606,7 @@ func (t *SimpleChaincode) alltransactions(stub shim.ChaincodeStubInterface, args
 
 	var TxArraystr string
 	var buffer bytes.Buffer
-	for k,v := range TxNewmap{
+	/*for k,v := range TxNewmap{
 		buffer.WriteString(k)
 		buffer.WriteString("&")
 		buffer.WriteString(v.Sender)
@@ -556,7 +619,8 @@ func (t *SimpleChaincode) alltransactions(stub shim.ChaincodeStubInterface, args
 		buffer.WriteString("&")
 		buffer.WriteString(v.TxNo)
 		buffer.WriteString("&")
-	}
+	} */
+	buffer.WriteString(get_TxmapString(TxNewmap))
 	//TxArrayvalBytes,_ = json.Marshal(TxNewmap)
 	//TxArraystr = buffer.String() 
 	fmt.Println(TxNewmap)
@@ -564,12 +628,13 @@ func (t *SimpleChaincode) alltransactions(stub shim.ChaincodeStubInterface, args
 
 	//var TxValidArraystr string
 	buffer.WriteString("&$$$$$$$&")
-	for k,v := range TxValidNewmap{
+	/*for k,v := range TxValidNewmap{
 		buffer.WriteString(k)
 		buffer.WriteString("&")
 		buffer.WriteString(v)
 		buffer.WriteString("&")
-	} 
+	} */
+	buffer.WriteString(get_TxValidmapString(TxValidNewmap))
 	//TxValidArrayvalBytes,_ = json.Marshal(TxValidNewmap)
 	TxArraystr = buffer.String() 
 	fmt.Println(TxValidNewmap)

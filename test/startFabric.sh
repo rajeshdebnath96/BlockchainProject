@@ -17,7 +17,7 @@ if [ "$LANGUAGE" = "node" -o "$LANGUAGE" = "NODE" ]; then
 	CC_SRC_PATH=/opt/gopath/src/github.com/fabcar/node
 fi
 
-CC_VERSION=1.15
+CC_VERSION=1.16
 
 # clean the keystore
 rm -rf ./hfc-key-store
