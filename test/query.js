@@ -48,6 +48,9 @@ app.use(function(req, res, next) {
 
 // Use body-parer to parse the JSON formatted request payload
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+	extended: false
+}))
 
 //startListener();
 
@@ -106,15 +109,15 @@ app.get('/viewAllTx', function(req, res) {
 });
 
 
-app.get('/viewTx', function(req, res) {
+app.post('/viewTx', function(req, res) {
 	// Amount to transfer
 	var txID = req.body.viewTx;
-	console.log("viewTx func: ",txID);
+	console.log("viewTx func: ",txID,req.body);
 	const request = {
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'mychaincode',
 		fcn: 'view',
-		args: ['900788600000']
+		args: [txID]
 	};
 	channel.queryByChaincode(request).then((query_responses) => {
 		console.log("Query has completed, checking results");
@@ -137,6 +140,7 @@ app.get('/viewTx', function(req, res) {
 
 app.post("/viewMyTx", function(req, res) {
 	// Amount to transfer
+
 	var user_name = req.body.viewMyTx;
 	console.log("viewMyTx func: ", user_name,req.body);
 	const request = {

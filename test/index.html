@@ -47,15 +47,19 @@
 				var viewTx = $("#viewTxID").val();
 				//var viewTx = $("input[name=viewTxID]").val();
 				//alert(viewTx1);
+				var data = {
+					"viewTx" : viewTx
+				};
 				console.log("viewTxID = " + viewTx);
 				$.ajax({
-					beforeSend: function(xhrObj){
+					/*beforeSend: function(xhrObj){
 				        xhrObj.setRequestHeader("Content-Type","application/json");
 				        xhrObj.setRequestHeader("Accept","application/json");
-				    },
-				    type: "GET",
+				    },*/
+				    type: "POST",
 				    url: 'http://localhost:3001/viewTx',
-					data: JSON.stringify({ "viewTx": viewTx,"viewTx1": viewTx }),
+					// data: JSON.stringify({ "viewTx": viewTx,"viewTx1": viewTx }),
+				    data : data,
 				    dataType: "json",
 					success: function(data, status) {
 						console.log(data);
@@ -88,14 +92,17 @@
 				var viewMyTxID = $("#viewMyTxID").val();
 				console.log("viewMyTx = " + viewMyTxID);
 
+				var data = { 
+								"viewMyTx": "Rajesh",
+								"viewTx1": "Rajesh" 
+							};
+
 				$.ajax({
-				    //beforeSend: function(xhrObj){
-				      //  xhrObj.setRequestHeader("Content-Type","application/json");
-				       // xhrObj.setRequestHeader("Accept","application/json");
-				    //},
+				    
 				    type: "POST",
 				    url: 'http://localhost:3001/viewMyTx',
-					data: JSON.stringify({ "viewMyTx": viewMyTxID,"viewTx1": viewMyTxID }),
+					// data: JSON.stringify(data),
+					data: data,
 				    dataType: "json",
 				    success: function(result) {
 				       console.log("Status: " + result.status);
@@ -153,26 +160,35 @@
 				       console.log("Status: " + result.status);
 						//$("#viewAllTxResult").text("Status: " + result.status);
 						var res = result.status.split("&");
+						var valid_str1, valid_str2;
 						var index = res.indexOf("$$$$$$$")
-						var index_valid;
+						var index_valid; 
+
 						var c = 7;
 						var str = "<table class=\"table table-hover\">";
 						str += "<thead><tr>"
 						str += "<th>Transaction ID</th><th>Sender</th><th>Receiver</th><th>Transaction Amount</th>";
 						str += "<th>Payment Media</th><th>Transaction No</th><th>Transaction Date</th><th>Verification Status</th><tr></thead>";
 						for(var i=0;(i+1)*c<index;i++){
-							str += "<tr>";
+							str += "<tr class =";
+							index_valid = res.indexOf(res[i*c],index);
+							console.log(res,index_valid,index);
+							if (res[index_valid+1] == 0 ) {valid_str1 ="active"; valid_str2="Not Verified";}
+							else if (res[index_valid+1] == 1) {valid_str1 ="success"; valid_str2="Correct (verified)";}
+							else if (res[index_valid+1] == 2) {valid_str1 ="danger"; valid_str2="Incorrect (verified)";} 
+							str += valid_str1 + ">"
 							for(var j=0;j<c;j++ ){
 								str+="<td>";
 								str += res[i*c+j];
 								str += "</td>"
 							}
 							str += "<td>";
-							index_valid = res.indexOf(res[i*c],index);
+							/*index_valid = res.indexOf(res[i*c],index);
 							console.log(res,index_valid,index);
-							if (res[index_valid+1] == 0 ) str+="Not Verified";
-							else if (res[index_valid+1] == 1) str+="Correct (verified)";
-							else if (res[index_valid+1] == 2) str+="Incorrect (verified)";
+							if (res[index_valid+1] == 0 ) valid_str1 ="active" str+="Not Verified";
+							else if (res[index_valid+1] == 1) valid_str1 ="success" str+="Correct (verified)";
+							else if (res[index_valid+1] == 2) valid_str1 ="danger" str+="Incorrect (verified)"; */
+							str += valid_str2;
 							//str += res[index_valid+1];
 							str += "</td></tr>"
 						}
