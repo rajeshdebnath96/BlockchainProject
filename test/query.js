@@ -177,6 +177,7 @@ app.post("/submit", function(req, res) {
 	var txNo = req.body.txNo;
 	var txDate = req.body.txDate;
 	console.log(sender,receiver,txAmount,pm,txNo,txDate);
+	var payload;
 	// get a transaction id object based on the current user assigned to fabric client
 	tx_id = fabric_client.newTransactionID();
 	console.log("Assigning transaction_id: ", tx_id._transaction_id);
@@ -207,9 +208,11 @@ app.post("/submit", function(req, res) {
 			}
 		if (isProposalGood) {
 			console.log(util.format(
-				'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"',
-				proposalResponses[0].response.status, proposalResponses[0].response.message));
-
+				'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s",payload - %s',
+				proposalResponses[0].response.status, proposalResponses[0].response.message, proposalResponses[0].response.payload));
+			//console.log(util.format('%s -- %s',proposalResponses[0].response.payload,proposalResponses[0].payload));
+			payload = proposalResponses[0].response.payload;
+			//console.log(payload)
 			// build up the request for the orderer to have the transaction committed
 			var request = {
 				proposalResponses: proposalResponses,
@@ -279,12 +282,15 @@ app.post("/submit", function(req, res) {
 
 		if(results && results[1] && results[1].event_status === 'VALID') {
 			console.log('Successfully committed the change to the ledger by the peer'+results+results[1]);
-			res.status(200).json({ status: results[1].toString() });
+			console.log(payload.toString());
+			res.status(200).json({ status: payload.toString() });
 		} else {
 			console.log('Transaction failed to be committed to the ledger due to ::'+results[1].event_status);
+			res.status(200).json({ status: results[1].event_status.toString() });
 		}
 	}).catch((err) => {
 		console.error('Failed to invoke successfully :: ' + err);
+		res.status(200).json({ status: err.toString() });
 	});
 });
 
@@ -297,7 +303,7 @@ app.post('/verifyTx', function(req, res) {
 	// get a transaction id object based on the current user assigned to fabric client
 	tx_id = fabric_client.newTransactionID();
 	console.log("Assigning transaction_id: ", tx_id._transaction_id);
-
+	var payload;
 	// createCar chaincode function - requires 5 args, ex: args: ['CAR12', 'Honda', 'Accord', 'Black', 'Tom'],
 	// changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
 	// must send the proposal to endorsing peers
@@ -326,7 +332,7 @@ app.post('/verifyTx', function(req, res) {
 			console.log(util.format(
 				'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"',
 				proposalResponses[0].response.status, proposalResponses[0].response.message));
-
+			payload = proposalResponses[0].response.payload;
 			// build up the request for the orderer to have the transaction committed
 			var request = {
 				proposalResponses: proposalResponses,
@@ -396,12 +402,14 @@ app.post('/verifyTx', function(req, res) {
 
 		if(results && results[1] && results[1].event_status === 'VALID') {
 			console.log('Successfully committed the change to the ledger by the peer');
-			res.status(200).json({ status: results[1].toString() });
+			res.status(200).json({ status: payload.toString() });
 		} else {
 			console.log('Transaction failed to be committed to the ledger due to ::'+results[1].event_status);
+			res.status(200).json({ status: results[1].event_status.toString() });
 		}
 	}).catch((err) => {
 		console.error('Failed to invoke successfully :: ' + err);
+		res.status(200).json({ status: err.toString() });
 	});
 });
 	

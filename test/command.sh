@@ -9,8 +9,9 @@ node query.js
 # nvm use node
 
 #Error: listen EADDRINUSE :::3001
-# sudo lsof -n -i :3001|grep LISTEN
-# kill -9 <pid>
+#pid=`sudo lsof -n -i :3001|grep LISTEN|awk '{print $2}'`
+#echo $pid hjkhh
+#kill -9 `sudo lsof -n -i :3001|grep LISTEN|awk '{print $2}'`
 
 
 #git commands
