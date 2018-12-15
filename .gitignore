@@ -10,5 +10,5 @@ scripts
 test/node_modules/
 test/package-lock.json
 test/hfc-key-store/
-test/bootstrap-4.1.3/
+test/web/bootstrap-4.1.3/
 
