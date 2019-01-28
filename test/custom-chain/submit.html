@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INSPINIA | Basic Form</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    
+	
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" src="img/profile_small.jpg" />
+                             </span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">David Williams</strong>
+                             </span> <span class="text-muted text-xs block">Art Director <b class="caret"></b></span> </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a href="profile.html">Profile</a></li>
+                            <li><a href="contacts.html">Contacts</a></li>
+                            <li><a href="mailbox.html">Mailbox</a></li>
+                            <li class="divider"></li>
+                            <li><a href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        IN+
+                    </div>
+                </li>
+                
+               <li class="active">
+                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Financial Transactions</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li><a href="submit.html">Submit Transaction</a></li>
+                        <li><a href="view.html">View Transaction</a></li>
+                        <li><a href="verify.html">Verify Transaction</a></li>
+                        <li><a href="my_tx.html">My Transactions</a></li>
+                        <li><a href="all_tx.html">All Transactions</a></li>
+                    </ul>
+                </li>
+                
+            </ul>
+
+        </div>
+    </nav>
+
+        <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom" action="search_results.html">
+                <div class="form-group">
+                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                </div>
+            </form>
+        </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                </li>
+                <li>
+                    <a href="login.html">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+            <div class="col-lg-5 col-lg-push-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Submit Transaction:</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="#">Config option 1</a>
+                                </li>
+                                <li><a href="#">Config option 2</a>
+                                </li>
+                            </ul>
+                            
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form role="form">
+                                    <div class="form-group"><label>Sender Name:</label> <input type="text" id="sender" placeholder="Enter Sender Name:" class="form-control"></div>
+                                    <div class="form-group"><label>Receiver Name:</label> <input type="text" id="receiver" placeholder="Enter Receiver Name:" class="form-control"></div>
+									<div class="form-group"><label>Transaction Amount:</label> <input type="text" id="txAmount" placeholder="Enter transaction Amount:" class="form-control"></div>
+                                    <div class="form-group"><label>Payment Medium:</label> <input type="text" id="pm" placeholder="Enter Payment Medium:" class="form-control"></div>
+									<div class="form-group"><label>Transaction No:</label> <input type="text" id="txNo" placeholder="Enter transaction No:" class="form-control"></div>
+                                    <div class="form-group" id="data_3">
+                                        <label>Date:</label>
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="txDate" placeholder="Enter Date:" value="10/11/2013">
+                                        </div>
+                                    </div>
+                                </form>
+								<button id="submit">Submit</button><br>
+								<p id="submitResult"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="footer">
+            <div class="pull-right">
+                10GB of <strong>250GB</strong> Free.
+            </div>
+            <div>
+                <strong>Copyright</strong> Example Company &copy; 2014-2017
+            </div>
+        </div>
+
+        </div>
+        </div>
+
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+    <!-- iCheck -->
+    <script src="js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Data picker -->
+   <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+			// Add a given number of units to the account value
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true
+            });
+
+			$("#submit").click(function() {
+				var sender = $("#sender").val();
+				var receiver = $("#receiver").val();
+				var txAmount = $("#txAmount").val();
+				var pm = $("#pm").val();
+				var txNo = $("#txNo").val();
+				var txDate = $('#txDate').val();
+				console.log("Sender : " + sender+" "+receiver+" "+txAmount+" "+pm+" "+txNo+" "+txDate);
+				$.ajax({
+					beforeSend: function(xhrObj){
+						xhrObj.setRequestHeader("Content-Type","application/json");
+						xhrObj.setRequestHeader("Accept","application/json");
+					},
+					type: "POST",
+					url: 'http://localhost:3001/submit',
+					data: JSON.stringify({ "sender": sender,"receiver":receiver,"txAmount":txAmount,"pm":pm,"txNo":txNo,"txDate":txDate }),
+					dataType: "json",
+					success: function(result) {
+					   console.log("Status: " + result.status);
+					   $("#submitResult").text("Status: Your Transaction id :" + result.status)
+					}
+				});
+			});
+        });
+    </script>
+</body>
+
+</html>

@@ -1,12 +1,16 @@
+#nvm codes
+nvm install 8.12.0
+nvm use node
+
+
+
 ./startFabric.sh
 node enrollAdmin.js
 node registerUser.js
 node query.js
 
 
-#nvm codes
-# nvm install 8.12.0
-# nvm use node
+
 
 #Error: listen EADDRINUSE :::3001
 #pid=`sudo lsof -n -i :3001|grep LISTEN|awk '{print $2}'`
